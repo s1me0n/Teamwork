@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  For more information on how to configure your ASP.NET application, please visit
+  http://go.microsoft.com/fwlink/?LinkId=169433
+  -->
+
+<configuration>
+    <appSettings>
+        <add key="MONGOLAB_URI" value="mongodb://127.0.0.1/SecretCommunicator" />
+        <add key="DropboxCallback" value="http://localhost:26056/Authorize.aspx" />
+    </appSettings>
+    
+    <system.web>
+        <compilation debug="true" targetFramework="4.0" />
+        <httpRuntime executionTimeout="110" maxRequestLength="2097151" />
+        <customErrors mode="Off" />
+    </system.web>
+
+    <system.serviceModel>
+        <bindings>
+            <webHttpBinding>
+                <binding name="WCFServiceBinding"
+                         maxReceivedMessageSize="10485760"
+                         maxBufferSize="10485760"
+                         closeTimeout="00:01:00" openTimeout="00:01:00"
+                         receiveTimeout="00:10:00" sendTimeout="00:01:00">
+                    <security mode="None"/>
+                </binding>
+            </webHttpBinding>
+        </bindings>
+        <behaviors>
+            <endpointBehaviors>
+                <behavior name="WCFServiceBehavior">
+                    <webHttp helpEnabled="true" automaticFormatSelectionEnabled="true"/>
+                </behavior>
+            </endpointBehaviors>
+            <serviceBehaviors>
+                <behavior>
+                    <serviceMetadata httpGetEnabled="true" />
+                    <serviceDebug includeExceptionDetailInFaults="false" />
+                </behavior>
+            </serviceBehaviors>
+        </behaviors>
+        <services>
+            <service name="SecretCommunicator.WebApp.Webservice.ChannelService">
+                <endpoint address="REST"
+                          binding="webHttpBinding"
+                          contract="SecretCommunicator.WebApp.Webservice.ChannelService"
+                          bindingConfiguration="WCFServiceBinding"
+                          behaviorConfiguration="WCFServiceBehavior" />
+            </service>
+        </services>
+        <serviceHostingEnvironment aspNetCompatibilityEnabled="true" />
+        <standardEndpoints>
+            <webHttpEndpoint>
+                <standardEndpoint helpEnabled="true" defaultOutgoingResponseFormat="Json" />
+            </webHttpEndpoint>
+        </standardEndpoints>
+    </system.serviceModel>
+    <system.webServer>
+        <security>
+            <requestFiltering>
+                <requestLimits maxAllowedContentLength="2147483648" />
+            </requestFiltering>
+        </security>
+        <defaultDocument>
+            <files>
+                <add value="default.html" />
+            </files>
+        </defaultDocument>
+    </system.webServer>
+</configuration>
